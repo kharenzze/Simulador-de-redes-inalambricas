@@ -162,8 +162,7 @@ classdef Canal
         end
         
         function p=calcularPathloss(this,d,l)
-        % Calcula el Pathloss del canal actual dada una distancia y una
-        % lambda
+        % Calcula el Pathloss del canal actual, dada una distancia y una longitud de onda
             switch this.pathloss
                 case 'fspl'
                     p=Canal.fspl_lin(d,l);
@@ -173,7 +172,7 @@ classdef Canal
         end
         
         function p=calcularShadowing(this,d)
-        % Calcula el shadowing.
+        % Calcula el shadowing dependiendo de la distribucion seleccionada.
             l=length(d);
             p=ones(1,l);
             switch this.shadowing
@@ -191,8 +190,8 @@ classdef Canal
         end
         
         function p=calcularMultipath(this,m,n,o)
-        % Calcula multipath dependiendo de la distribucion deseada y los
-        % parametros que se indiquen
+        % Calcula multipath dependiendo de la distribucion seleccionada.
+        %   La salida tiene dimensiones (m,n,o)
             a=this.multipath;
             switch a
                 case 'rayl'

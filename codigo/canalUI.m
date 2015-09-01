@@ -386,7 +386,7 @@ else
         end
     else
         n=100*n;
-        muestra=handles.canal.calcularMultipath(n);
+        muestra=handles.canal.calcularMultipath(1,n,1);
         if isequal(h,handles.radiobutton1)
             [y,x]=hist(muestra,150);
         else
