@@ -308,7 +308,7 @@ function nuevoNodoRapido_Callback(hObject, eventdata, handles)
 % hObject    handle to nuevoNodoRapido (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-p=get(handles.mapa, 'CurrentPoint')
+p=get(handles.mapa, 'CurrentPoint');
 n=length(handles.datos.listaNodos)+1;
 handles.datos.listaNodos{n}=Nodo(p(2,1),p(2,2),strcat(['Nodo ' num2str(n)]));
 guidata(hObject,handles);
