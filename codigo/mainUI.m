@@ -136,6 +136,7 @@ else
     set(handles.editDuracion,'String',num2str(data{2}));
     set(handles.editDt,'String',num2str(data{3}));
     handles.datos.mapa=data{4};
+    axis(handles.mapa,handles.datos.mapa.limites());
     setPopupEnc(data{5},handles);
     handles.datos.canal=data{6};
     set(handles.checkSilencio,'value',data{7})
