@@ -30,15 +30,15 @@ classdef Nodo
             this.tx=Transmisor();
             this.estilo='k*';
             this.P_idle=1e-3;
-            
+            this.name='';
             % Se crean los parametros que dependen del numero de argumentos de entrada
             switch nargin
+                case 0
+                    return
                 case 1
                     this.mov.pos=varargin{1}.randPos();
-                    this.name='';
                 case 2
                     this.mov.pos=[varargin{1} varargin{2}];
-                    this.name='';
                 case 3
                     this.mov.pos=[varargin{1} varargin{2}];
                     if ischar(varargin{3})
@@ -66,6 +66,13 @@ classdef Nodo
                     end
                 end
             end
+        end
+        
+        function n=MICAz()
+            %Devuelve un nodo basado en el sensor MICAz
+            n=Nodo();
+            n.P_idle=lin(15);
+            n.rx.sensibilidad=-94;
         end
     end
 end

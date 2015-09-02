@@ -6,7 +6,7 @@ classdef Receptor
         f;  %Hz. Frecuencia de trabajo
         lambda; %m. Longitud de onda
         gain;   %Ganancia máxima de una antena
-        sensibilidad;   %dB.Potencia mínima de recepción
+        sensibilidad;   %dBm.Potencia mínima de recepción
         antenas; % Cell de antenas
         nAntenas;% Número de antenas
     end

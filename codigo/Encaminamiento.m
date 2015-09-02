@@ -158,7 +158,7 @@ classdef Encaminamiento
             cost=consumo(this.d,this.d);
             i=1;
             while path(i)~=this.d
-                if dist(this.d,path(i))<this.Dopt
+                if dist(this.d,path(i))<this.Dopt && cobertura(this.d,path(i))
                     cost=cost+consumo(this.d,path(i));
                     i=i+1;
                     path(i)=this.d;
@@ -197,7 +197,7 @@ classdef Encaminamiento
             cost=consumo(this.d,this.d);
             i=1;
             while path(i)~=this.d
-                if dist(this.d,path(i))<this.Dopt
+                if dist(this.d,path(i))<this.Dopt && cobertura(this.d,path(i))
                     cost=cost+consumo(this.d,path(i));
                     i=i+1;
                     path(i)=this.d;
@@ -248,7 +248,7 @@ classdef Encaminamiento
                 posible=1./(posible&FTS&cobertura(:,path(i)));
                 [next,nextIndex]=min(posible.*dist(:,this.d));
                 if isinf(next)
-                    if dist(this.d,path(i))<this.Dopt
+                    if dist(this.d,path(i))<this.Dopt && cobertura(this.d,path(i))
                         cost=cost+consumo(this.d,path(i));
                         i=i+1;
                         path(i)=this.d;
@@ -349,7 +349,7 @@ classdef Encaminamiento
             dist(1:n) = inf;   % it stores the shortest distance between the source node and any other node;
             prev(1:n) = n+1;    % Previous node, informs about the best previous node known to reach each  network node 
 
-            dist(this.s) = 0;
+            dist(this.s) = consumo(this.d,this.d); % se añade como basse el consumo del nodo receptor, ya que este no entra en ningun calculo
 
             % eliminacion de nodos inaccesibles 
             S=~any(isfinite(mapa),2)' & ~any(isfinite(mapa),1);% se marcan como visitados los no validos
@@ -384,9 +384,6 @@ classdef Encaminamiento
                 end
             end;
             cost = dist(this.d);
-            
-            
-            cost=cost+consumo(this.d,this.d);% añadido consumo del nodo de destino
         end
     end
 end

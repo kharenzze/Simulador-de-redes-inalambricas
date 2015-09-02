@@ -5,7 +5,7 @@ classdef Antena
     properties
         pattern;% Diagrama de radiación en unidades lineales (no normalizado)
         angle;% (Rad) Vector de angulos del patrón de radiación.
-        dir;% (Rad) Angulo de orientación de la antena, con respecto a la dirección de movimiento del Nodo. Sentido anticc-horario
+        dir;% (Rad) Angulo de orientación de la antena, con respecto a la dirección de movimiento del Nodo. Sentido anti-horario
     end
     
     methods

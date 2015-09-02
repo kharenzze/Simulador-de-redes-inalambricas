@@ -26,14 +26,12 @@ classdef Transmisor
             if nargin == 4
                 this.pmin=varargin{1};
                 this.pmax=varargin{2};
-                this.f=varargin{3};
-                this.lambda=lambda(this.f);
+                this=this.setF(varargin{3});
                 this=this.setAntenas({Antena()});
             elseif nargin==0
                 this.pmin=-200;
                 this.pmax=0;
-                this.f=2.4e9;
-                this.lambda=lambda(this.f);
+                this=this.setF(2.4e9);
                 this=this.setAntenas({Antena()});
             else
                 error('Error al crear objeto. Numero de argumentos de entrada no valido')
