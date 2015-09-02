@@ -587,22 +587,31 @@ for nS=1:nSim
             end
             %% Bucle de simulación
             %% Movimiento
-            % Cada muestra depende de la anterior, por eso se calcula fuera del buvle parfor 
+            % Cada muestra depende de la anterior, por eso se calcula fuera del bucle parfor 
+%             velocidad=zeros(listaNodos_length,2,t_length);
+%             for i=1:t_length
+%                 posicion=zeros(listaNodos_length,2);
+%                 for j=1:listaNodos_length
+%                     velocidad(j,:,i)=listaNodos{j}.mov.v;
+%                     posicion(j,:)=listaNodos{j}.mov.pos;
+%                     listaNodos{j}.mov=listaNodos{j}.mov.mover(dt,t(i),handles.datos.mapa,v_cambio_dir(i));
+%                 end
+%                 pos(:,:,i)=posicion;
+%             end
+            
+            
             velocidad=zeros(listaNodos_length,2,t_length);
-            for i=1:t_length
-                posicion=zeros(listaNodos_length,2);
-                for j=1:listaNodos_length
+            parfor j=1:listaNodos_length
+%                 posicion=zeros(1,2,t_length);
+                for i=1:t_length
                     velocidad(j,:,i)=listaNodos{j}.mov.v;
-                    posicion(j,:)=listaNodos{j}.mov.pos;
+                    pos(j,:,i)=listaNodos{j}.mov.pos;
                     listaNodos{j}.mov=listaNodos{j}.mov.mover(dt,t(i),handles.datos.mapa,v_cambio_dir(i));
                 end
-                pos(:,:,i)=posicion;
             end
             
-            D=zeros(listaNodos_length,listaNodos_length,t_length);%inicializar d
-            
-            
             %% Calculo de matriz de distancias
+            D=zeros(listaNodos_length,listaNodos_length,t_length);%inicializar d
             parfor i=1:t_length
                 FTS=zeros(2,listaNodos_length);
                 d_=zeros(listaNodos_length);
@@ -619,7 +628,7 @@ for nS=1:nSim
 
                 % Calculo distancias
                 for I=1:listaNodos_length-1
-                    for J=I+1:listaNodos_length
+                    for J=I:1:listaNodos_length
                         if FTS(I)&&FTS(J)
                             d_(I,J)=Movimiento.distancia(pos(I,:,i),pos(J,:,i))
                         else
@@ -630,14 +639,21 @@ for nS=1:nSim
                 D(:,:,i)=d_+d_';
             end
             
+            
             PERDIDAS=zeros(listaNodos_length,listaNodos_length,3,t_length);
-            for rx=1:listaNodos_length
+            parfor rx=1:listaNodos_length
+                PERDIDAS_=zeros(1,listaNodos_length,3,t_length);
                 for tx=rx:listaNodos_length
-                    PERDIDAS(rx,tx,1,:)=canal.calcularPathloss(D(rx,tx,:),listaNodos{tx}.tx.lambda);
-                    PERDIDAS(rx,tx,2,:)=canal.calcularShadowing(D(rx,tx,:));
+                    if any(~isinf(D(rx,tx,:)))
+                        PERDIDAS_(1,tx,1,:)=canal.calcularPathloss(D(rx,tx,:),listaNodos{tx}.tx.lambda);
+                        PERDIDAS_(1,tx,2,:)=canal.calcularShadowing(D(rx,tx,:));
+                    else
+                        PERDIDAS_(1,tx,:,:)=nan;
+                    end
                 end
+                PERDIDAS(rx,:,:,:)=PERDIDAS_;
             end
-            PERDIDAS=PERDIDAS+permute(PERDIDAS,[2 1 3 4]);
+            PERDIDAS=PERDIDAS+permute(PERDIDAS,[2 1 3 4]);% simetria
             PERDIDAS(:,:,3,:)=canal.calcularMultipath(listaNodos_length,listaNodos_length,t_length);
             
             % Cálculos
