@@ -1,6 +1,5 @@
 classdef Mapa
-    % En esta clase se definen los parametros del mapa
-    %   
+    % En esta clase se definen los parámetros del mapa
     
     properties
         x;% Vector de puntos del eje x
@@ -26,14 +25,13 @@ classdef Mapa
         end
         
         function l = limites(this)
-            % Esta función devuelve un vector con los limites. Este vector
-            % es el tipico que se pasa a la función AXIS
+            % Esta función devuelve un vector con los limites.
+            % Este vector es el tipico que se pasa a la función AXIS
             l=[this.minX this.maxX this.minY this.maxY];
         end
         
         function d=distanciaMaxima(this)
-            % Devuelve la distancia maxima que puede haber entre 2 puntos
-            % del mapa, osea, la distancia de la diagonal
+            % Devuelve la distancia maxima que puede haber entre 2 puntos del mapa, osea, la distancia de la diagonal
             d=norm([this.ancho this.alto]);
         end
         

@@ -1,5 +1,5 @@
 classdef Canal
-    %En esta clase se definen los metodos referentes al modelado de propagación en el canal 
+    %En esta clase se definen los metodos referentes al modelado de canal de propagación. 
     
     properties
         pathloss;%String. Modelo de pathloss
@@ -20,8 +20,9 @@ classdef Canal
     
     methods
         function this = Canal(varargin)
-            % Este es el constructor de la clase. Crea un canal
-            % predeterminado
+            % Este es el constructor de la clase. 
+            %   Canal() Crea un canal predeterminado
+            %   Canal(d)Crea un canal con un vector de distancias que llega hasta d
             switch nargin
                 case 0 
                     this=this.setPathloss('fspl',{});
@@ -40,8 +41,7 @@ classdef Canal
         end
         
         function this=setVectorDistancia(this,min,max)
-            % Genera un vector de distancias. Este es necesario para
-            % generar el shadowing.
+            % Genera un vector de distancias. Este es necesario para generar el shadowing.
             % 
             % min: distancia mánima en metros
             % max: distancia máxima en metros
@@ -56,8 +56,8 @@ classdef Canal
         end
         
         function this=generateShadowing(this)
-            % Con esta función se genera el shadowing. Para ello, se toman
-            % 20 muestras por decada, y se interpola el vector para tener
+            % Genera el shadowing según el tipo y parámetros establecidos en la clase.
+            % Para ello, se toman 20 muestras por decada, y se interpola el vector para tener
             switch this.shadowing
                 case 'logn'
                     Fs=round(this.n./this.nDecadas./this.oscilaciones);
@@ -69,8 +69,7 @@ classdef Canal
         end
         
         function this = setShadowing(this,t,c)
-            % Funcion que se encarga de establecer el tipo de shadowing en
-            % un canal
+            % Establece el tipo de shadowing en el canal
             if ischar(t)
                 t=lower(t);
                 switch t
@@ -96,8 +95,7 @@ classdef Canal
         end
         
         function this = setMultipath(this,t,c)
-            % Funcion que se encarga de establecer el tipo de multipath en
-            % un canal
+            % Establece el tipo de multipath en el canal
             if ischar(t)
                 t=lower(t);
                 switch t
@@ -135,7 +133,7 @@ classdef Canal
             
         
         function this = setPathloss(this,t,c)
-            % Establece el modelo de Pathloss
+            % Establece el modelo de Pathloss en el canal
             %
             %   setPathloss('fspl',{})
             %
@@ -206,8 +204,7 @@ classdef Canal
         end
         
         function out=calcularPerdidas(this,d,l)
-            % Calcula las perdidas totales de enlace, dado un vector de
-            % distancias y un lambda (l) en metros
+            % Calcula las perdidas totales de enlace, dado un vector de distancias y un lambda (l) en metros
             n=length(d);
             out=zeros(3,n);
             out(1,:)=this.calcularPathloss(d,l);
@@ -216,17 +213,14 @@ classdef Canal
         end
         
         function umbral=getUmbral(this)
+            % Calcula el umbral de transmisión para el canal.
             % Calcula cuanto varían las perdidas totales con respecto al
             % pathloss en media. Este dato se utiliza como umbral para
             % establecer una potencia de transmisión adecuada a la
             % distancia que separa a los nodos. 
+            % 
             % Ver clase TRANSMISOR para mas información
             
-            %metodo antiguo
-%             variacion=this.calcularShadowing(this.d).*this.calcularMultipath(this.n);
-%             umbral=abs(dB(mean(variacion)));
-%             minimo=abs(dB(min(variacion)));
-%             umbral=umbral+abs(minimo-umbral)/3;
             variacion=this.calcularShadowing(this.d).*this.calcularMultipath(1,this.n,1);
             perdidas=variacion(variacion<1);
             [y,x]=hist(perdidas,100);
@@ -239,7 +233,7 @@ classdef Canal
         end
         
         function d=calcularDopt(this,NodoTx,NodoRx,umbral)
-            % Devuelve la distancia óptima para la cual el gasto energetico es mínimo
+            % Devuelve la distancia óptima para la cual el factor de avance es máximo
             switch this.pathloss
                 case 'fspl'
                     d=sqrt((NodoTx.tx.lambda .^2 .* (NodoTx.P_idle + NodoRx.P_idle))./...
@@ -271,8 +265,7 @@ classdef Canal
     
     methods(Static)
         function p = fspl(d,lambda)
-            % Esta funcion calcula las perdidas por propagación en espacio
-            % libre y las devuelve en dB
+            % Calcula las perdidas por propagación en espacio libre y las devuelve en dB
             % 
             %   p = fspl(d,lambda)  d es distancia, lambda longitud de onda
             %   en m
@@ -280,8 +273,7 @@ classdef Canal
         end
         
         function p = fspl_lin(d,lambda)
-            % Esta funcion calcula las perdidas por propagación en espacio
-            % libre y las devuelve en dB
+            % Calcula las perdidas por propagación en espacio libre y las devuelve en unidades lineales
             % 
             %   p = fspl(d,lambda)  d es distancia, lambda longitud de onda
             %   en m

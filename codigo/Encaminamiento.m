@@ -1,12 +1,11 @@
 classdef Encaminamiento
-    % Clase en la que se definen los distintos algoritmos de encaminamiento
-    % que se utilizan
+    % Clase en la que se definen los distintos algoritmos de encaminamiento que se utilizan en el simulador.
     %   Concretamente, cada uno esta diseñado para encontrar el camino
     %   optimo suponiendo como origen el nodo 2, y destino el nodo 1
     
     properties
         tipo;% Tipo de encaminamiento utilizado 
-        Calcular; % Puntero a funcion correspondiente.
+        Calcular; % Puntero a funcion correspondiente. Siempre se le pasan todos los parámetros,y toma los que necesita.
         s;% Nodo de origen
         d;% Nodo de destino
         Dopt;% Distancia optima de transmisión. Depende del canal y los nodos implicados
@@ -14,6 +13,9 @@ classdef Encaminamiento
     
     methods
         function this = Encaminamiento(varargin)
+            % Constructor de la clase
+            %   Encaminamiento() - Predterminado. Greedy y sin Dopt establecido
+            %   Encaminamiento(tipo,origen,destino,Dopt) 
             switch nargin
                 case 0
                     this=this.setTipo('greedy');
@@ -94,12 +96,13 @@ classdef Encaminamiento
                 ':sb',...
                 ':dy'};
         end
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Metodos de encaminamiento
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         function [cost,path]=directo(this,~,~,consumo,cobertura)
-            % Encaminamiento clásico. Desde el emisor, al receptor.
+            % Encaminamiento directo, clásico. Desde el emisor, al receptor.
             if cobertura(this.d,this.s)
                 path=[this.s this.d];
                 cost=consumo(this.d,this.s)+consumo(this.d,this.d);
@@ -109,11 +112,10 @@ classdef Encaminamiento
         end
         
         function [cost,path]=greedy(this,dist,~,consumo,cobertura)
-            % Implementación del algoritmo de encaminamiento 'Greedy
-            % Minimum Energy'
+            % Implementación del algoritmo de encaminamiento 'Greedy Minimum Energy'
             %   cost:       Coste del camino completo
             %   path:       Vector con el camino
-            %   d:          Matriz de distancias entre nodos
+            %   dist:       Matriz de distancias entre nodos
             %   consumo:    Matriz con el consumo de un nodo al transmitir
             %               a otro nodo
             %   Cobertura:  Matriz que indica si un nodo recibe la señal de
@@ -141,11 +143,10 @@ classdef Encaminamiento
         end
         
         function [cost,path]=B_Above(this,dist,~,consumo,cobertura)
-            % Implementación del algoritmo de encaminamiento 'Greedy
-            % Minimum Energy'
+            % Implementación del algoritmo de encaminamiento 'Bounded distance from above'
             %   cost:       Coste del camino completo
             %   path:       Vector con el camino
-            %   d:          Matriz de distancias entre nodos
+            %   dist:          Matriz de distancias entre nodos
             %   consumo:    Matriz con el consumo de un nodo al transmitir
             %               a otro nodo
             %   Cobertura:  Matriz que indica si un nodo recibe la señal de
@@ -180,11 +181,10 @@ classdef Encaminamiento
         end
         
         function [cost,path]=B_Below(this,dist,~,consumo,cobertura)
-            % Implementación del algoritmo de encaminamiento 'Greedy
-            % Minimum Energy'
+            % Implementación del algoritmo de encaminamiento 'Bounded distance from below'
             %   cost:       Coste del camino completo
             %   path:       Vector con el camino
-            %   d:          Matriz de distancias entre nodos
+            %   dist:          Matriz de distancias entre nodos
             %   consumo:    Matriz con el consumo de un nodo al transmitir
             %               a otro nodo
             %   Cobertura:  Matriz que indica si un nodo recibe la señal de
@@ -225,11 +225,10 @@ classdef Encaminamiento
         end
         
         function [cost,path]=GeRaF(this,dist,~,consumo,cobertura)
-            % Implementación del algoritmo de encaminamiento 'Greedy
-            % Minimum Energy'
+            % Implementación del algoritmo de encaminamiento 'Modified geographic random forwarding'
             %   cost:       Coste del camino completo
             %   path:       Vector con el camino
-            %   d:          Matriz de distancias entre nodos
+            %   dist:       Matriz de distancias entre nodos
             %   consumo:    Matriz con el consumo de un nodo al transmitir
             %               a otro nodo
             %   Cobertura:  Matriz que indica si un nodo recibe la señal de
@@ -274,11 +273,11 @@ classdef Encaminamiento
         end
         
         function [cost,path]=EEGR(this,dist,pos,consumo,cobertura)
-            % Implementación del algoritmo de encaminamiento 'Greedy
-            % Minimum Energy'
+            % Implementación del algoritmo de encaminamiento 'Modified Energy-Efficient geographic routing'
             %   cost:       Coste del camino completo
             %   path:       Vector con el camino
-            %   d:          Matriz de distancias entre nodos
+            %   dist:       Matriz de distancias entre nodos
+            %   pos:        Vector de posiciones de los nodos
             %   consumo:    Matriz con el consumo de un nodo al transmitir
             %               a otro nodo
             %   Cobertura:  Matriz que indica si un nodo recibe la señal de
@@ -330,11 +329,9 @@ classdef Encaminamiento
         end
         
         function [cost,path]=dijkstra(this,~,~,consumo,cobertura)
-            % Implementación del algoritmo de encaminamiento 'Greedy
-            % Minimum Energy'
+            % Implementación del algoritmo de encaminamiento 'Dijkstra'
             %   cost:       Coste del camino completo
             %   path:       Vector con el camino
-            %   d:          Matriz de distancias entre nodos
             %   consumo:    Matriz con el consumo de un nodo al transmitir
             %               a otro nodo
             %   Cobertura:  Matriz que indica si un nodo recibe la señal de

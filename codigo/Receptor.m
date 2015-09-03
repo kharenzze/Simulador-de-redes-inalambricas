@@ -1,12 +1,11 @@
 classdef Receptor
-    %Receptor Objeto con parametros de recepción de señales de un nodo
-    %   Detailed explanation goes here
+    %Representa los parámetros de recepción de señales de un nodo
     
     properties
         f;  %Hz. Frecuencia de trabajo
         lambda; %m. Longitud de onda
         gain;   %Ganancia máxima de una antena
-        sensibilidad;   %dBm.Potencia mínima de recepción
+        sensibilidad;   %dBm. Potencia mínima de recepción
         antenas; % Cell de antenas
         nAntenas;% Número de antenas
     end

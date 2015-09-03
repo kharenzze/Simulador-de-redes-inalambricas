@@ -80,6 +80,7 @@ classdef Movimiento
         end
         
         function this = calcularVelocidad(this,t,mapa)
+            % Calcula la velocidad para un instante de tiempo determinado
             switch this.tipo
                 case 'random'
                     this.v=[this.params.n*cos(rand*2*pi) this.params.n*sin(rand*2*pi)];
@@ -111,8 +112,7 @@ classdef Movimiento
             end
         end
         function this = mover(this,dt,t,mapa,cambio_dir)
-            % Actualiza la posicion y la velocidad
-            % Calcular nueva velocidad
+            % Actualiza la posicion y la velocidad.
             if isequal(this.tipo,'random')
                 if cambio_dir
                     this=this.calcularVelocidad(t,mapa);

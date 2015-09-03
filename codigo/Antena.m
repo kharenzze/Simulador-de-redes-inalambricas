@@ -1,6 +1,5 @@
 classdef Antena
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
+    % Representa una antena situada en un nodo de comunicación
     
     properties
         pattern;% Diagrama de radiación en unidades lineales (no normalizado)
@@ -28,7 +27,10 @@ classdef Antena
         
         function this=setPattern(this,p,angle)
             % Establece el patrón de radiación
-            % Se puede utilizar para establecer un patrón de radiación personalizado
+            % Se puede utilizar para establecer un patrón de radiación
+            % personalizado
+            %
+            % angle debe estar en el rango [-pi,pi]
             if length(p)==length(angle)
                 this.pattern=p;
                 this.angle=angle;
@@ -75,8 +77,8 @@ classdef Antena
         
         function c = arrayN(n,max)
             % Devuelve un cell con n antenas 'coseno' distribuidas uniformemente
-            % n = número de antenas
-            % max = ganancia maxima
+            %   n = número de antenas
+            %   max = ganancia maxima
             c=cell(1,n);
             [p,a] = Antena.coseno(max,2,30);
             direcciones=0:2*pi/n:2*pi;

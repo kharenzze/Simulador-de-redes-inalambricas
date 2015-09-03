@@ -1,9 +1,9 @@
 classdef Transmisor
-    %Objeto que define los distintos parámetros de transmisión de un nodo
+    %Representa los parámetros de transmisión de señales de un nodo
     
     properties
-        pmax; %dB Potencia de transmisión máxima
-        pmin;%dB Potencia de transmisión mínima
+        pmax; %dBm. Potencia de transmisión máxima
+        pmin;%dBm. Potencia de transmisión mínima
         f; %Hz. Frecuencia de trabajo
         lambda; %m. Longitud de onda
         gain; %Ganancia máxima de una antena
@@ -45,8 +45,7 @@ classdef Transmisor
         end
         
         function p = ajustarPotencia(this,pl,sensibilidad,G,umbral)
-            % Esta función devuelve la potencia de transmisión para emitir
-            % a un nodo dado un pathloss.
+            % Esta función devuelve la potencia de transmisión para emitir a un nodo dado un pathloss.
             % G= producto de ganancias
             p=sensibilidad+umbral-dB(pl)-dB(G);
             if p>this.pmax
@@ -59,6 +58,7 @@ classdef Transmisor
         
         function this= setAntenas(this,c)
             % Establece el cell de antenas
+            % c - cell de antenas
             this.antenas=c;
             this.gain=0;
             this.nAntenas=length(c);
