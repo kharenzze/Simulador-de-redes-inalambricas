@@ -1,6 +1,5 @@
 classdef Nodo
     %Nodo Representa a un nodo de comunicación
-    %   Detailed explanation goes here
     
     properties
         rx; %Parámetros de recepción. Clase 'Receptor'
@@ -54,8 +53,7 @@ classdef Nodo
     
     methods(Static)
         function checkListaNodos(listaNodos)
-            % Indica si una lista de nodos está definida de forma correcta, siendo
-            % todos los elementos de esta de la clase 'Nodo'
+            % Indica si una lista de nodos está definida de forma correcta, siendo todos los elementos de esta de la clase 'Nodo'
             l=length(listaNodos);
             if l<1
                 error('La lista no tiene ningun elemento');
@@ -71,7 +69,7 @@ classdef Nodo
         function n=MICAz()
             %Devuelve un nodo basado en el sensor MICAz
             n=Nodo();
-            n.P_idle=lin(15);
+            n.P_idle=lin(-9);
             n.rx.sensibilidad=-94;
         end
     end

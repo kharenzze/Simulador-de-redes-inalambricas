@@ -247,21 +247,23 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+try
+    % Comprobación del boton pulsado
+    if isequal(hObject,handles.botonAceptar)
+        handles.cancelar=0;
+        guidata(hObject,handles)
+    end     
 
-% Comprobación del boton pulsado
-if isequal(hObject,handles.botonAceptar)
-    handles.cancelar=0;
-    guidata(hObject,handles)
-end     
-
-% Resume figure
-if isequal(get(gcf, 'waitstatus'), 'waiting')
-   uiresume(gcf);
-else
-   delete(gcf); %Hint: delete(hObject) closes the figure
+    % Resume figure
+    if isequal(get(gcf, 'waitstatus'), 'waiting')
+       uiresume(gcf);
+    else
+       delete(gcf); %Hint: delete(hObject) closes the figure
+    end
+catch 
+    delete(gcf);
+    warning('Parece que algo no ha ido bien al cerrar la figura');
 end
-
-
 % --- Executes on button press in botonAplicar.
 function botonAplicar_Callback(hObject, eventdata, handles)
 % hObject    handle to botonAplicar (see GCBO)
@@ -359,15 +361,22 @@ if isequal(handles.radiobutton3,h)
     plot(a,log10(d_log),dB(prod(y(1:2,:))),'g');
     plot(a,log10(d_log),dB(y(1,:)),'k');
     hold(a,'off')
+    xlabel('Decadas')
+    ylabel('Perdidas (dB)');
+    legend({'Pathloss','Pathloss + shadowing','Total'})
 else
     efecto=get(handles.efecto,'Value');
     if efecto==1
         if isequal(h,handles.radiobutton1)
             y=handles.canal.calcularPathloss(d_lin,l);
             plot(a,d_lin,dB(y))
+            xlabel('Distancia (m)')
+            ylabel('Perdidas (dB)');
         else
             y=handles.canal.calcularPathloss(d_log,l);
             plot(a,log10(d_log),dB(y))
+            xlabel('Distancia(m)(Decadas)')
+            ylabel('Perdidas (dB)');
         end
     elseif efecto==2
         if isequal(handles.canal.shadowing,'no')
@@ -379,9 +388,15 @@ else
                 handles.canal.shadowingParams{2},1,n);
             [y,x]=hist(dB(muestras),150);
             if isequal(h,handles.radiobutton1)
+                [y,x]=hist(muestras,150);
                 plot(x,y/n);
+                xlabel('Valor (lineal)')
+                ylabel('Probabilidad');
             else
+                [y,x]=hist(dB(muestras),150);
                 plot(x,y/n);
+                xlabel('Valor (dB)')
+                ylabel('Probabilidad');    
             end
         end
     else
@@ -389,9 +404,14 @@ else
         muestra=handles.canal.calcularMultipath(1,n,1);
         if isequal(h,handles.radiobutton1)
             [y,x]=hist(muestra,150);
+            plot(x,y/n);
+            xlabel('Valor (lineal)')
+            ylabel('Probabilidad'); 
         else
             [y,x]=hist(dB(muestra),150);
+            plot(x,y/n);
+            xlabel('Valor (dB)')
+            ylabel('Probabilidad'); 
         end
-        plot(x,y/n);
     end
 end
