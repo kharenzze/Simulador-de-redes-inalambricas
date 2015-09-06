@@ -363,7 +363,7 @@ if isequal(handles.radiobutton3,h)
     hold(a,'off')
     xlabel('Decadas')
     ylabel('Perdidas (dB)');
-    legend({'Pathloss','Pathloss + shadowing','Total'})
+    legend({'Total','Pathloss + shadowing','Pathloss'})
 else
     efecto=get(handles.efecto,'Value');
     if efecto==1
