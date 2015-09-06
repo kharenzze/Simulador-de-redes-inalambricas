@@ -361,7 +361,7 @@ if isequal(handles.radiobutton3,h)
     plot(a,log10(d_log),dB(prod(y(1:2,:))),'g');
     plot(a,log10(d_log),dB(y(1,:)),'k');
     hold(a,'off')
-    xlabel('Decadas')
+    xlabel('Distancia (Décadas)')
     ylabel('Perdidas (dB)');
     legend({'Total','Pathloss + shadowing','Pathloss'})
 else
@@ -375,7 +375,7 @@ else
         else
             y=handles.canal.calcularPathloss(d_log,l);
             plot(a,log10(d_log),dB(y))
-            xlabel('Distancia(m)(Decadas)')
+            xlabel('Distancia(Décadas)')
             ylabel('Perdidas (dB)');
         end
     elseif efecto==2
