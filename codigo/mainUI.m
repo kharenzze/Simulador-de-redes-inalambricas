@@ -440,13 +440,6 @@ function ejecutar_Callback(hObject, eventdata, handles)
 % hObject    handle to ejecutar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%% Comprobacion de numero minimo de nodos
-listaNodos=handles.datos.listaNodos;
-listaNodos_length=length(listaNodos);
-if listaNodos_length<2
-    errordlg('Se debe de introducir un minimo de 2 nodos')
-    error('Se debe de introducir un minimo de 2 nodos')
-end
 
 %% Se comprueba si se está simulando
 if handles.simulando
@@ -466,6 +459,13 @@ end
 S=@squeeze;% Solventa un problema en la computación paralela
 %% Inicialización de parametros
 if isempty(handles.datos.Execute)
+    %% Comprobacion de numero minimo de nodos
+    listaNodos=handles.datos.listaNodos;
+    listaNodos_length=length(listaNodos);
+    if listaNodos_length<2
+        errordlg('Se debe de introducir un minimo de 2 nodos')
+        error('Se debe de introducir un minimo de 2 nodos')
+    end
     silencio=get(handles.checkSilencio,'value');
     fastmode=get(handles.checkFast,'value');
     paralelo=get(handles.checkParalelo,'value');
