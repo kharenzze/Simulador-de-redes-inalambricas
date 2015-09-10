@@ -528,16 +528,16 @@ for nS=1:nSim
     if ~isempty(handles.datos.Execute)
         current=cd();
         cd(handles.datos.ruta)
-        eval(strcat(['F=@()' handles.datos.Execute{nS} ';']));
+        k=strfind(handles.datos.Execute{nS},'(');
+        eval(strcat(['F=@' handles.datos.Execute{nS}(1:(k-1)) ';']));
+        argumentos=handles.datos.Execute{nS}(k:end);
         cd(current);
     end
     for nR=1:nRep
         set(handles.seguimiento,'string',sprintf('Sim: %d/%d  Rep: %d/%d',nS,nSim,nR,nRep));
         pause(1e-20)
         if ~isempty(handles.datos.Execute)
-            cd(handles.datos.ruta)
-            data=F();
-            cd(current);
+            eval(strcat(['data=F' argumentos ';']));
             fastmode=true;
             paralelo=data{9};
             dt=data{3};
