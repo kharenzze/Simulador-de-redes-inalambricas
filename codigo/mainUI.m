@@ -509,6 +509,8 @@ final_coste=zeros(nSim,barrido_length);
 simulacion_coste=zeros(nRep,barrido_length);
 final_saltos=final_coste;
 simulacion_saltos=simulacion_coste;
+final_validez=final_coste;
+simulacion_validez=simulacion_coste;
 
 %% Figura de resultados 
 handles.representacion.figuraRecepcionTx=2;
@@ -533,7 +535,9 @@ for nS=1:nSim
         set(handles.seguimiento,'string',sprintf('Sim: %d/%d  Rep: %d/%d',nS,nSim,nR,nRep));
         pause(1e-20)
         if ~isempty(handles.datos.Execute)
+            cd(handles.datos.ruta)
             data=F();
+            cd(current);
             fastmode=true;
             paralelo=data{9};
             dt=data{3};
@@ -550,8 +554,6 @@ for nS=1:nSim
         end
         % inicializacion de matrices
         pos=zeros(listaNodos_length,2,t_length);
-        canal=handles.datos.canal;
-        mapa=handles.datos.mapa;
         UMBRAL=canal.getUmbral();
         canal=canal.setVectorDistancia(1,mapa.distanciaMaxima);
         cobertura=zeros(listaNodos_length,listaNodos_length,t_length);
@@ -607,7 +609,7 @@ for nS=1:nSim
                 for i=1:t_length
                     velocidad(j,:,i)=listaNodos{j}.mov.v;
                     pos(j,:,i)=listaNodos{j}.mov.pos;
-                    listaNodos{j}.mov=listaNodos{j}.mov.mover(dt,t(i),handles.datos.mapa,v_cambio_dir(i));
+                    listaNodos{j}.mov=listaNodos{j}.mov.mover(dt,t(i),mapa,v_cambio_dir(i));
                 end
             end
             
@@ -723,7 +725,7 @@ for nS=1:nSim
                 tiempoTotal=toc;
                 handles.representacion.figuraRecepcion=figuraRecepcion(handles.figure1);
                 frh=guidata(handles.representacion.figuraRecepcion);
-                axis(frh.mapa,handles.datos.mapa.limites());
+                axis(frh.mapa,mapa.limites());
                 plot(frh.axes1,t,...
                     S(recepcion(handles.representacion.figuraRecepcionRx,...
                     handles.representacion.figuraRecepcionTx,:)));
@@ -751,7 +753,7 @@ for nS=1:nSim
                     if silencio
                         handles.representacion.figuraRecepcion=figuraRecepcion(handles.figure1);
                         frh=guidata(handles.representacion.figuraRecepcion);
-                        axis(frh.mapa,handles.datos.mapa.limites());
+                        axis(frh.mapa,mapa.limites());
                         plot(frh.axes1,t(1:i),...
                             S(recepcion(handles.representacion.figuraRecepcionRx,...
                             handles.representacion.figuraRecepcionTx,1:i)));
@@ -827,7 +829,7 @@ for nS=1:nSim
                         end
                         consumo(rx,rx,i)=listaNodos{rx}.P_idle;
                         % Se mueve el nodo
-                        listaNodos{rx}.mov=listaNodos{rx}.mov.mover(dt,t(i),handles.datos.mapa,v_cambio_dir(i));
+                        listaNodos{rx}.mov=listaNodos{rx}.mov.mover(dt,t(i),mapa,v_cambio_dir(i));
                     end
                 else
                     for rx=1:listaNodos_length
@@ -850,7 +852,7 @@ for nS=1:nSim
                             end
                         end
                         % Se mueve el nodo
-                        listaNodos{rx}.mov=listaNodos{rx}.mov.mover(dt,t(i),handles.datos.mapa,v_cambio_dir(i));
+                        listaNodos{rx}.mov=listaNodos{rx}.mov.mover(dt,t(i),mapa,v_cambio_dir(i));
                     end
                 end
 
@@ -920,7 +922,7 @@ for nS=1:nSim
                 if silencio
                     handles.representacion.figuraRecepcion=figuraRecepcion(handles.figure1);
                     frh=guidata(handles.representacion.figuraRecepcion);
-                    axis(frh.mapa,handles.datos.mapa.limites());
+                    axis(frh.mapa,mapa.limites());
                     plot(frh.axes1,t,...
                         S(recepcion(handles.representacion.figuraRecepcionRx,...
                         handles.representacion.figuraRecepcionTx,:)));
@@ -937,7 +939,9 @@ for nS=1:nSim
         [m,n]=size(ruta);
         saltos=zeros(m,n);
         for I=1:m
-            simulacion_coste(nR,I)=mean(coste(I,isfinite(coste(I,:))));
+            validos=isfinite(coste(I,:));
+            simulacion_coste(nR,I)=mean(coste(I,validos));
+            simulacion_validez(nR,I)=sum(validos)/length(coste(I,:))*100;
             for J=1:n
                 saltos(I,J)=length(ruta{I,J})-1;
             end
@@ -946,6 +950,7 @@ for nS=1:nSim
     end
     final_coste(nS,:)=mean(simulacion_coste,1);
     final_saltos(nS,:)=mean(simulacion_saltos,1);
+    final_validez(nS,:)=mean(simulacion_validez,1);
     if ~isempty(handles.datos.Execute)
         nombres{nS}=name;
     end
@@ -959,10 +964,14 @@ if ~isempty(handles.datos.Execute)
     figure('name', strcat(['Simulacion ' num2str(handles.n) '. Número de saltos']),'numbertitle','off')
     a2=gca;
     hold on
+    figure('name', strcat(['Simulacion ' num2str(handles.n) '. Validez de las medidas']),'numbertitle','off')
+    a3=gca;
+    hold on
     [~,n]=size(final_coste);
     for i=1:n
         plot(a1,final_coste(:,i),estilo_plot{i});
         plot(a2,final_saltos(:,i),estilo_plot{i});
+        plot(a3,final_validez(:,i),estilo_plot{i});
     end
     legend(a1,tiposEnc)
     ylabel(a1,'Potencia total (dB)')
@@ -972,4 +981,8 @@ if ~isempty(handles.datos.Execute)
     ylabel(a2,'Número de saltos')
     set(a2,'xtick',1:nSim);
     set(a2,'xticklabel',nombres);
+    legend(a3,tiposEnc)
+    ylabel(a3,'Validez de las medidas')
+    set(a3,'xtick',1:nSim);
+    set(a3,'xticklabel',nombres);
 end

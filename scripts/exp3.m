@@ -9,7 +9,7 @@ mapa=Mapa(100,100,1);% Mapa
 n=50;       % Numero de nodos
 enc='Barrido';% Nombre del encaminamiento
 canal=Canal();% Modelo de Canal
-canal=canal.setPathloss('simpl',{Canal.fspl(1,lambda(2.4e9)),1,2.4});
+canal=canal.setPathloss('simpl',{Canal.fspl(1,lambda(2.4e9)),1,4});
 name='';
 % en caso de llamar a la función, los parametros de entrada sobreescriben a los anteriores.
 switch nargin
