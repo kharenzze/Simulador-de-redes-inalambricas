@@ -982,7 +982,7 @@ if ~isempty(handles.datos.Execute)
     set(a2,'xtick',1:nSim);
     set(a2,'xticklabel',nombres);
     legend(a3,tiposEnc)
-    ylabel(a3,'Validez de las medidas')
+    ylabel(a3,'Validez de las medidas (%)')
     set(a3,'xtick',1:nSim);
     set(a3,'xticklabel',nombres);
 end
